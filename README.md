@@ -3,4 +3,4 @@
  
  ```sh
  $ go run example.go
- '''
+ ```
