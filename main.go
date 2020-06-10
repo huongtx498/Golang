@@ -1,21 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"GOLANG/api"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
-func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to the HomePage!")
-	fmt.Println("Endpoint Hit: homePage")
-}
-
-func handleRequests() {
-	http.HandleFunc("/", homePage)
-	log.Fatal(http.ListenAndServe(":10000", nil))
-}
-
 func main() {
-	handleRequests()
+	router := mux.NewRouter()
+
+	router.HandleFunc("/api/v1/user/find", api.FindUser).Methods("GET")
+	router.HandleFunc("/api/v1/user/getall", api.GetAll).Methods("GET")
+	router.HandleFunc("/api/v1/user/create", api.CreateUser).Methods("POST")
+	router.HandleFunc("/api/v1/user/update", api.UpdateUser).Methods("PUT")
+	router.HandleFunc("/api/v1/user/delete", api.Delete).Methods("DELETE")
+
+	err := http.ListenAndServe(":5000", router)
+	if err != nil {
+		panic(err)
+	}
 }
