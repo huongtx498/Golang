@@ -4,8 +4,24 @@ import (
 	"GOLANG/entities"
 	"GOLANG/models"
 	"encoding/json"
+	"math/rand"
 	"net/http"
 )
+
+func HashUrl(response http.ResponseWriter, request *http.Request) {
+	urls, ok1 := request.URL.Query()["url"]
+	userNames, ok2 := request.URL.Query()["username"]
+	if !ok1 || !ok2 || len(urls) < 1 || len(userNames) < 1 {
+		responseWithError(response, http.StatusBadRequest, "Url Param id is missing")
+		return
+	}
+	userNameHash := models.HashString(userNames[0])
+	urlHash := models.HashString(urls[0] + userNameHash + string(rand.Intn(1000000)))
+	shortenUrl := models.EncodeString(urlHash)
+	shorten := "http://misa/" + shortenUrl[:6]
+	responseWithJSON(response, http.StatusOK, shorten)
+
+}
 
 func FindUser(response http.ResponseWriter, request *http.Request) {
 	ids, ok := request.URL.Query()["id"]
@@ -28,7 +44,7 @@ func GetAll(response http.ResponseWriter, request *http.Request) {
 
 func CreateUser(response http.ResponseWriter, request *http.Request) {
 	var user entities.User
-	err := json.NewDecoder(request.Body).Decode(&user)
+	err := json.NewDecoder(request.Body).Decode(&user) // Decoder(*variable) đọc dữ liệu JSON và lưu vào user, truyền tham chiếu => truyền vào địa chỉ của biến; Encoder() ghi dữ liệu JSON
 	if err != nil {
 		responseWithError(response, http.StatusBadRequest, err.Error())
 	} else {

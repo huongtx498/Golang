@@ -2,12 +2,28 @@ package models
 
 import (
 	"GOLANG/entities"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
 	"errors"
 )
 
 var (
 	listUser = make([]*entities.User, 0) // make a slice with init len(listUser) = 0
 )
+
+func HashString(s string) string {
+	h := sha256.New()
+	h.Write([]byte(s))
+	sha256_hash := hex.EncodeToString(h.Sum(nil))
+	return sha256_hash
+}
+
+func EncodeString(s string) string {
+	data := []byte(s)
+	encode := base64.StdEncoding.EncodeToString(data)
+	return encode
+}
 
 func CreateUser(user *entities.User) bool {
 	if user.Id != "" && user.Name != "" && user.Password != "" {

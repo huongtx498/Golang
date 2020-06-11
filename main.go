@@ -10,6 +10,8 @@ import (
 func main() {
 	router := mux.NewRouter()
 
+	router.HandleFunc("/api/v1/user/hash", api.HashUrl).Methods("GET")
+
 	router.HandleFunc("/api/v1/user/find", api.FindUser).Methods("GET")
 	router.HandleFunc("/api/v1/user/getall", api.GetAll).Methods("GET")
 	router.HandleFunc("/api/v1/user/create", api.CreateUser).Methods("POST")
